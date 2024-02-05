@@ -1,5 +1,6 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
+import Button from './Button';
 
 // const Square = () => {
 //   const [mark, setMark] = useState(null);
@@ -23,11 +24,22 @@ import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 //   );
 // };
 
-const Square = ({onPress, mark}) => {
+// const Square = ({onPress, mark}) => {
+//   return (
+//     <TouchableOpacity style={styles.square} onPress={onPress}>
+//       <Text style={styles.mark}>{mark}</Text>
+//     </TouchableOpacity>
+//   );
+// };
+
+const Square = ({mark, onPress}) => {
   return (
-    <TouchableOpacity style={styles.square} onPress={onPress}>
-      <Text style={styles.mark}>X</Text>
-    </TouchableOpacity>
+    <Button
+      text={mark}
+      onPress={onPress}
+      textStyle={styles.mark}
+      btnStyle={styles.square}
+    />
   );
 };
 
@@ -35,18 +47,17 @@ const styles = StyleSheet.create({
   square: {
     width: 100,
     height: 100,
-    backgroundColor: '#e7a2',
-    border: 'solid',
-    borderWidth: 3,
-    borderColor: '#1B3855',
+    backgroundColor: '#548ec9',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
   },
   mark: {
     fontSize: 30,
     color: '#1B3855',
     fontWeight: 'bold',
-    fontFamily: 'Montserrat, sans-serif',
+    fontFamily: 'Helvetica',
   },
 });
 

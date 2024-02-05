@@ -1,25 +1,30 @@
-import React, {useState} from 'react';
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {View, StyleSheet} from 'react-native';
-import Square from './Components/Square';
-import Board from './Components/Board';
+import HomeScreen from './Screens/HomeScreen';
+import GameScreen from './Screens/GameScreen';
 
-const App = () => {
-  // const [isPlayer1, setTurn] = useState(true);
+const Stack = createNativeStackNavigator();
 
+export default function App() {
   return (
-    <View style={styles.container}>
-      <Board />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Game" component={GameScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     backgroundColor: '#F5FCFF',
+//   },
+// });
 
-export default App;
+// export default App;
