@@ -13,6 +13,11 @@ const ViewItemScreen = ({route, navigation}) => {
     navigation.goBack();
   };
 
+  const completeItem = () => {
+    dispatch({type: 'REMOVE_ITEM', payload: itemID});
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
       {item ? (
@@ -21,6 +26,7 @@ const ViewItemScreen = ({route, navigation}) => {
         <Text>Item not found</Text>
       )}
       <ButtonComp text="Delete" onPress={deleteItem} />
+      <ButtonComp text="Complete" onPress={completeItem} />
     </View>
   );
 };

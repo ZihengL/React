@@ -1,7 +1,6 @@
 import React, {useReducer} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-// import {initialState, notesReducer} from './Notes/notesReducer';
 import ListItemsScreen from './Notes/Screens/ListItems';
 import AddItemScreen from './Notes/Screens/AddItem';
 import ViewItemScreen from './Notes/Screens/ViewItem';
