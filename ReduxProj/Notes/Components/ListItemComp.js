@@ -11,12 +11,14 @@ const ListItemComp = ({key, content, onPress}) => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: 'left',
     justifyContent: 'center',
-    padding: 20,
+    backgroundColor: 'gray',
+    padding: 5,
+    margin: 5,
   },
   textstyle: {
-    color: '#1B3855',
+    color: 'white',
     fontFamily: 'Helvetica',
   },
 });
