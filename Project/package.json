@@ -10,8 +10,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.0",
     "react": "18.2.0",
-    "react-native": "0.73.4"
+    "react-native": "^0.63.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
