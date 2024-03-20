@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Switch, StyleSheet, Text, Alert } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import WeatherComponent from "../Components/WeatherComponent";
 
 const SettingsScreen = () => {
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
@@ -32,6 +33,7 @@ const SettingsScreen = () => {
 
   return (
     <View style={styles.container}>
+      <WeatherComponent />
       <View style={styles.option}>
         <Text>Stay Logged In</Text>
         <Switch
@@ -48,9 +50,20 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
+    justifyContent: "start",
+    alignItems: "left",
+    borderWidth: 1,
+    borderColor: "#7348",
+  },
+  weather: {
+    height: 200,
+    width: 200,
+    borderWidth: 1,
+    borderColor: "#7348",
   },
   option: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

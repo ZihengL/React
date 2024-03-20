@@ -9,16 +9,24 @@ const SignUpScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const handleSignUp = async () => {
-    try {
-      await SecureStore.setItemAsync(
-        "user",
-        JSON.stringify({ username, email, password })
+    if (username.trim().length === 0 || password.trim().length === 0) {
+      Alert.alert(
+        "Error",
+        "Username and password fields cannot be blank or whitespaces"
       );
-      Alert.alert("Success", "You are signed up successfully!");
-      navigation.navigate("SignIn");
-    } catch (error) {
-      console.error("Error saving user data", error);
-      Alert.alert("Error", "Failed to save user data");
+    } else {
+      try {
+        await SecureStore.setItemAsync(
+          username,
+          JSON.stringify({ username, email, password })
+        );
+
+        Alert.alert("Success", "You are signed up successfully!");
+        navigation.navigate("SignIn");
+      } catch (error) {
+        console.error("Error saving user data", error);
+        Alert.alert("Error", "Failed to save user data");
+      }
     }
   };
 

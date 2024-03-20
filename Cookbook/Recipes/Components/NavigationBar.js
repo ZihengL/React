@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useUser } from "../Redux/UserContext";
 
 import SignInScreen from "../Screens/SignIn";
 import SignUpScreen from "../Screens/SignUp";
@@ -58,16 +59,17 @@ function HomeStack() {
 }
 
 const BottomTabNavigator = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user } = useUser();
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const token = await SecureStore.getItemAsync("userToken");
-      setIsLoggedIn(!!token);
-    };
+  // useEffect(() => {
+  //   const checkLoginStatus = async () => {
+  //     const token = await SecureStore.getItemAsync("userToken");
+  //     setIsLoggedIn(!!token);
+  //   };
 
-    checkLoginStatus();
-  }, []);
+  //   checkLoginStatus();
+  // }, []);
 
   const getIconName = (routename, focused) => {
     let iconName;
@@ -98,7 +100,7 @@ const BottomTabNavigator = () => {
         tabBarInactiveTintColor: "#ccc8c8",
       })}
     >
-      {isLoggedIn ? (
+      {user ? (
           <Tab.Screen name="Home" component={HomeStack} />
       ) : (
         <Tab.Screen name="Auth" component={AuthStack} />

@@ -1,25 +1,24 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet, Alert } from "react-native";
+import ButtonComponent from "../Components/ButtonComponent";
+
+import { useUser } from "../Redux/UserContext";
 import * as SecureStore from "expo-secure-store";
 import Icon from "react-native-vector-icons/Ionicons";
-import ButtonComponent from "../Components/ButtonComponent";
 
 const SignInScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { setUser } = useUser();
 
   const handleSignIn = async () => {
     try {
-      const userData = await SecureStore.getItemAsync("user");
+      const userData = await SecureStore.getItemAsync(username);
       const userDetails = userData ? JSON.parse(userData) : null;
 
-      if (
-        userDetails &&
-        username === userDetails.username &&
-        password === userDetails.password
-      ) {
-        Alert.alert("Success", "You are signed in successfully!");
-        navigation.navigate("Home"); // Navigate to the home screen after successful sign-in
+      if (userDetails && password === userDetails.password) {
+        setUser(userDetails);
+        navigation.navigate("Home");
       } else {
         Alert.alert("Failed", "Invalid username or password");
       }
@@ -31,7 +30,7 @@ const SignInScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Icon name={'pizza'} size={10} color={color} />
+      <Icon name={"pizza"} size={10} color={"#246b7d"} />
 
       <TextInput
         placeholder="Username"
