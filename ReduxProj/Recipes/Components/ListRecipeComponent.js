@@ -1,16 +1,12 @@
 import React, {useContext} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
-import {ItemsContext} from '../ItemsContext';
+import {ACTIONS} from '../Redux/RecipesReducer';
 
-const ListItemComp = ({key, content, onPress}) => {
-  const {dispatch} = useContext(ItemsContext);
+const ListRecipeComponent = ({key, content, onPress}) => {
+  const {dispatch} = useContext(RecipesContext);
 
-  const deleteItem = () => {
-    dispatch({type: 'REMOVE_ITEM', payload: {id: key}});
-  };
-
-  const setComplete = () => {
-    dispatch({type: ''})
+  const deleteRecipe = () => {
+    dispatch({type: 'DELETE', payload: {id: key}});
   };
 
   return (
@@ -19,9 +15,9 @@ const ListItemComp = ({key, content, onPress}) => {
         <Text>{content}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={deleteItem}>
+      <TouchableOpacity onPress={deleteRecipe}>
         <Image
-          source={require('./../img/trash.png')}
+          source={require('../../res/trash.png')}
           style={styles.ImageIconStyle}
         />
       </TouchableOpacity>
@@ -40,7 +36,6 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     width: '100%',
-
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'gray',
@@ -49,4 +44,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListItemComp;
+export default ListRecipeComponent;

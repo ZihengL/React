@@ -1,24 +1,25 @@
-import React, {useReducer} from 'react';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import ListItemsScreen from './Notes/Screens/ListItems';
-import AddItemScreen from './Notes/Screens/AddItem';
-import ViewItemScreen from './Notes/Screens/ViewItem';
-import {NotesProvider} from './Notes/ItemsContext';
+
+import {RecipesProvider} from './Recipes/Redux/RecipesContext';
+import ListRecipesScreen from './Recipes/Screens/ListRecipes';
+import ViewRecipeScreen from './Recipes/Screens/ViewRecipe';
+import AddRecipeScreen from './Recipes/Screens/AddRecipe';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <NotesProvider>
+    <RecipesProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Notes">
-          <Stack.Screen name="Items" component={ListItemsScreen} />
-          <Stack.Screen name="ViewItem" component={ViewItemScreen} />
-          <Stack.Screen name="AddItem" component={AddItemScreen} />
+        <Stack.Navigator initialRouteName="Recipes">
+          <Stack.Screen name="Recipes" component={ListRecipesScreen} />
+          <Stack.Screen name="ViewRecipe" component={ViewRecipeScreen} />
+          <Stack.Screen name="AddRecipe" component={AddRecipeScreen} />
         </Stack.Navigator>
       </NavigationContainer>
-    </NotesProvider>
+    </RecipesProvider>
   );
 };
 

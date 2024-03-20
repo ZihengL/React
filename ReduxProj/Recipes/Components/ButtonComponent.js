@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 
-const ButtonComp = ({text, onPress, containerStyle}) => {
+const ButtonComponent = ({text, onPress, containerStyle}) => {
   const style = containerStyle ? containerStyle : styles.container;
 
   return (
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ButtonComp;
+export default ButtonComponent;
