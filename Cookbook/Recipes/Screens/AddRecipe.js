@@ -1,5 +1,12 @@
 import React, { useState, useContext } from "react";
-import { View, TextInput, StyleSheet, Text, Image } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Text,
+  Image,
+  ScrollView,
+} from "react-native";
 // import { RNCamera } from "react-native-camera";
 import { useUser } from "../Redux/UserContext";
 import { useRecipes } from "../Redux/RecipesContext";
@@ -76,7 +83,8 @@ const AddRecipeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>NEW RECIPE</Text>
+      {/* <Text style={styles.title}>NEW RECIPE</Text> */}
+      <ButtonComponent text={"Save"} onPress={addRecipe} />
       <TextInput
         placeholder="Name"
         value={name}
@@ -84,8 +92,14 @@ const AddRecipeScreen = ({ navigation }) => {
         style={styles.input}
       />
 
-      {picture && <Image source={{ uri: picture }} style={styles.picture} />}
-      <View style={{flexDirection: 'row', padding: 20}}>
+      {picture && (
+        <Image
+          source={{ uri: picture }}
+          style={styles.picture}
+          resizeMode="contain"
+        />
+      )}
+      <View style={{ flexDirection: "row", padding: 20 }}>
         <ButtonComponent
           text={picture ? "Update picture" : "Take a picture"}
           onPress={takePhoto}
@@ -107,7 +121,6 @@ const AddRecipeScreen = ({ navigation }) => {
         multiline
         numberOfLines={3}
       />
-      <ButtonComponent text="Save" onPress={addRecipe} />
     </View>
   );
 };
@@ -115,9 +128,15 @@ const AddRecipeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
     padding: 30,
     justifyContent: "start",
     alignItems: "center",
+  },
+  item: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#cccccc",
   },
   title: {
     width: "100%",
@@ -131,8 +150,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   picture: {
-    width: 350,
-    height: 300,
+    width: '100%',
+    height: 150,
     margin: 16,
     borderWidth: 1,
     borderColor: "#ddd",

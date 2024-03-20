@@ -37,8 +37,10 @@ const WeatherComponent = ({style}) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 200,
+    marginBottom: 15,
     width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "#cccccc",
   },
   text: {
     fontSize: 18,
