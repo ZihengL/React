@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {View, TextInput, StyleSheet, Text} from 'react-native';
+import {View, TextInput, StyleSheet, Text } from 'react-native';
 
 import {useRecipes} from '../Redux/RecipesContext';
 import {ACTIONS} from '../Redux/RecipesReducer';
@@ -65,6 +65,8 @@ const AddRecipeScreen = ({navigation}) => {
         value={instructions}
         onChangeText={setInstructions}
         style={styles.instructions}
+        multiline
+        numberOfLines={3}
       />
 
       <ButtonComponent text="Save" onPress={addRecipe} />
@@ -93,6 +95,7 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     marginBottom: 16,
+    color: '#246b7d',
     borderWidth: 1,
     borderColor: '#ddd',
     padding: 8,
@@ -102,8 +105,9 @@ const styles = StyleSheet.create({
     width: '100%',
     borderColor: '#ddd',
     borderWidth: 1,
-    margin: 20,
-    color: '#FFF',
+    color: '#246b7d',
+    padding: 8,
+    textAlignVertical: 'top',
   },
 });
 

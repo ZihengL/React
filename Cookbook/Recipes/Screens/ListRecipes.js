@@ -9,7 +9,6 @@ import ListRecipeComponent from '../Components/ListRecipeComponent';
 
 const ListRecipesScreen = ({navigation}) => {
   const {recipes} = useRecipes();
-  const [val, setVal] = useState('Nah');
 
   return (
     <View style={styles.container}>
@@ -20,13 +19,9 @@ const ListRecipesScreen = ({navigation}) => {
           <ListRecipeComponent recipe={item} navigation={navigation} />
         )}
       />
-      <Text>{val}</Text>
       <ButtonComponent
         text="+"
-        // onPress={() => navigation.navigate('AddRecipe')}
-        onPress={() => {
-          console.log('pressed');
-        }}
+        onPress={() => navigation.navigate('AddRecipe')}
       />
     </View>
   );
