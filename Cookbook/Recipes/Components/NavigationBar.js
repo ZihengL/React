@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useUser } from "../Redux/UserContext";
+import ButtonComponent from "../Components/ButtonComponent";
 
 import SignInScreen from "../Screens/SignIn";
 import SignUpScreen from "../Screens/SignUp";
@@ -35,9 +37,9 @@ function AuthStack() {
 function HomeStack() {
   return (
     <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
+    // screenOptions={{
+    //   headerShown: false,
+    // }}
     >
       <Stack.Screen
         name="ListRecipes"
@@ -52,7 +54,9 @@ function HomeStack() {
       <Stack.Screen
         name="AddRecipe"
         component={AddRecipeScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerRight: () => <TouchableOpacity text="Save" />,
+        }}
       />
     </Stack.Navigator>
   );
@@ -98,10 +102,11 @@ const BottomTabNavigator = () => {
         },
         tabBarActiveTintColor: "#246b7d",
         tabBarInactiveTintColor: "#ccc8c8",
+        headerShown: false,
       })}
     >
       {user ? (
-          <Tab.Screen name="Home" component={HomeStack} />
+        <Tab.Screen name="Home" component={HomeStack} />
       ) : (
         <Tab.Screen name="Auth" component={AuthStack} />
       )}

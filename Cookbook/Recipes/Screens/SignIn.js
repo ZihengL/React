@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, StyleSheet, Alert } from "react-native";
+import { View, TextInput, Text, StyleSheet, Alert } from "react-native";
 import ButtonComponent from "../Components/ButtonComponent";
 
 import { useUser } from "../Redux/UserContext";
@@ -13,9 +13,9 @@ const SignInScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (user) {
-        navigation.navigate("Home");
+      navigation.navigate("Home");
     }
-}, [user]);
+  }, [user]);
 
   // useEffect(() => {
   //   const checkForSavedUser = async () => {
@@ -55,8 +55,18 @@ const SignInScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Icon name={"pizza"} size={10} color={"#246b7d"} />
-
+      <View style={styles.logoContainer}>
+        <Icon
+          name={"pizza"}
+          size={100}
+          color={"#246b7d"}
+          style={{ alignSelf: "center" }}
+        />
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>COOK</Text>
+          <Text style={styles.title}>BOOK</Text>
+        </View>
+      </View>
       <TextInput
         placeholder="Username"
         value={username}
@@ -82,9 +92,33 @@ const SignInScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    padding: 20,
+    padding: 40,
+    justifyContent: "start",
     alignContent: "center",
+  },
+  logoContainer: {
+    marginTop: 30,
+    marginBottom: 50,
+    alignSelf: "center",
+    textAlign: "center",
+    // borderWidth: 1,
+    // borderColor: "gray",
+  },
+  titleContainer: {
+    marginTop: 10,
+    alignSelf: "center",
+    textAlign: "center",
+    color: "#246b7d",
+    // borderWidth: 1,
+    // borderColor: "gray",
+  },
+  title: {
+    fontWeight: "800",
+    fontSize: 40,
+    // alignSelf: "center",
+    color: "#246b7d",
+    // borderWidth: 1,
+    // borderColor: "gray",
   },
   input: {
     marginBottom: 12,

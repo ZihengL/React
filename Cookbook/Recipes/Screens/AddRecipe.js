@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 // import { RNCamera } from "react-native-camera";
 import { useUser } from "../Redux/UserContext";
@@ -55,7 +56,7 @@ const AddRecipeScreen = ({ navigation }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -81,16 +82,22 @@ const AddRecipeScreen = ({ navigation }) => {
     navigation.goBack();
   };
 
+  React.useEffect(() => {
+    // Use `setOptions` to update the button that we previously specified
+    // Now the button includes an `onPress` handler to update the count
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerButton} onPress={addRecipe}>
+          <Text style={{ fontSize: 15, marginRight: 20, }}>Save</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>NEW RECIPE</Text> */}
-      <ButtonComponent text={"Save"} onPress={addRecipe} />
-      <TextInput
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
+      {/* <ButtonComponent text={"Save"} onPress={addRecipe} /> */}
 
       {picture && (
         <Image
@@ -103,9 +110,21 @@ const AddRecipeScreen = ({ navigation }) => {
         <ButtonComponent
           text={picture ? "Update picture" : "Take a picture"}
           onPress={takePhoto}
+          containerStyle={styles.pictureButtons}
         />
-        <ButtonComponent text={"Choose a picture"} onPress={pickPhoto} />
+        <ButtonComponent
+          text={"Choose a picture"}
+          onPress={pickPhoto}
+          containerStyle={styles.pictureButtons}
+        />
       </View>
+
+      <TextInput
+        placeholder="Name"
+        value={name}
+        onChangeText={setName}
+        style={styles.input}
+      />
 
       <TextInput
         placeholder="Ingredients"
@@ -133,6 +152,13 @@ const styles = StyleSheet.create({
     justifyContent: "start",
     alignItems: "center",
   },
+  // headerButton: {
+  //   height: 20,
+  //   width: 50,
+  //   padding: 30,
+  //   // justifyContent: "start",
+  //   // alignItems: "right",
+  // },
   item: {
     padding: 20,
     borderBottomWidth: 1,
@@ -150,8 +176,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   picture: {
-    width: '100%',
-    height: 150,
+    width: "100%",
+    height: 300,
     margin: 16,
     borderWidth: 1,
     borderColor: "#ddd",
@@ -163,6 +189,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     padding: 8,
+  },
+  pictureButtons: {
+    width: '50%',
+    backgroundColor: '#246b7d',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    padding: 15,
+    margin: 10,
+    // marginTop: 20,
   },
   instructions: {
     flex: 1,
