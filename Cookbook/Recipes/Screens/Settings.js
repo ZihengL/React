@@ -1,84 +1,72 @@
 import React, { useState, useEffect } from "react";
-import { View, Switch, StyleSheet, Text, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Switch,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
+import { COLORS } from "../Tools/Defaults";
 import { useUser } from "../Redux/UserContext";
 
 import * as SecureStore from "expo-secure-store";
 import WeatherComponent from "../Components/WeatherComponent";
 
-const SettingsScreen = () => {
-  // const { user } = useUser();
-  // const { stayLoggedIn, setStayLoggedIn } = useState(false);
-  const { stayLoggedIn, setStayLoggedIn } = useUser();
+const SettingsScreen = ({ navigation }) => {
+  const { user, setUser, stayLoggedIn, setStayLoggedIn } = useUser();
+
+  React.useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity text="Logout" onPress={() => setUser(null)}>
+          <Text
+            style={{
+              marginRight: 20,
+              fontSize: 15,
+              fontWeight: "bold",
+              color: "#FFF",
+            }}
+          >
+            Logout
+          </Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const handleToggleStayLoggedIn = async () => {
     try {
       const newValue = !stayLoggedIn;
       setStayLoggedIn(newValue);
-      await SecureStore.setItemAsync('stayLoggedIn', newValue.toString());
+      await SecureStore.setItemAsync("stayLoggedIn", newValue.toString());
+
+      if (newValue && user) {
+        await SecureStore.setItemAsync("savedUser", JSON.stringify(user));
+      } else {
+        await SecureStore.deleteItemAsync("savedUser");
+      }
     } catch (error) {
-      Alert.alert('Error', 'Failed to save settings');
+      Alert.alert("Error", "Failed to save settings");
     }
   };
 
-  // useEffect(() => {
-  //   const loadStayLoggedIn = async () => {
-  //     try {
-  //       const value = await SecureStore.getItemAsync("stayLoggedIn");
-  //       if (value !== null) {
-  //         setStayLoggedIn(value === "true");
-  //       }
-  //     } catch (error) {
-  //       Alert.alert("Error", "Failed to load settings");
-  //     }
-  //   };
-
-  //   loadStayLoggedIn();
-  // }, []);
-
-  // const handleToggleStayLoggedIn = async () => {
-  //   try {
-  //     setStayLoggedIn((currentState) => {
-  //       const newValue = !currentState;
-
-  //       console.log("bnew", newValue);
-
-  //       // Perform SecureStore operations after state is definitely updated
-  //       (async () => {
-  //         await SecureStore.setItemAsync(
-  //           "stayLoggedIn",
-  //           JSON.stringify(newValue)
-  //         );
-
-  //         if (newValue) {
-  //           // Ensure 'user' is properly formatted as a string
-  //           const userData = JSON.stringify(user.username);
-  //           console.log(userData);
-  //           await SecureStore.setItemAsync("savedUser", userData);
-  //         } else {
-  //           await SecureStore.deleteItemAsync("savedUser");
-  //         }
-  //       })();
-
-  //       return newValue;
-  //     });
-  //   } catch (error) {
-  //     console.error("Error toggling stay logged in", error);
-  //     Alert.alert("Error", "Failed to save settings");
-  //   }
-  // };
-
   return (
     <View style={styles.container}>
-      <View style={styles.weather}>
+      <View style={{ width: "100%" }}>
         <WeatherComponent />
       </View>
+
       <View style={styles.option}>
-        <Text>Stay Logged In</Text>
+        <Text style={{ color: user ? COLORS.PRIMARY : COLORS.SECONDARY }}>
+          Stay Logged In
+        </Text>
         <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={stayLoggedIn ? "#f5dd4b" : "#f4f3f4"}
+          trackColor={{ false: COLORS.SECONDARY2, true: COLORS.PRIMARY2 }}
+          thumbColor={stayLoggedIn ? COLORS.SECONDARY : COLORS.PRIMARY}
           onValueChange={handleToggleStayLoggedIn}
           value={stayLoggedIn}
+          disabled={!user}
         />
       </View>
     </View>
@@ -92,16 +80,12 @@ const styles = StyleSheet.create({
     justifyContent: "start",
     alignItems: "left",
   },
-  weather: {
-    width: "100%",
-    paddingVertical: 12,
-  },
   option: {
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 12,
+    padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#cccccc",
   },

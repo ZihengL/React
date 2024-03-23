@@ -1,40 +1,71 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Keyboard,
+} from "react-native";
 import ButtonComponent from "../Components/ButtonComponent";
-
+import { COLORS } from "../Tools/Defaults";
+import { ACTIONS } from "../Redux/RecipesReducer";
 import { useUser } from "../Redux/UserContext";
+import { useRecipes } from "../Redux/RecipesContext";
 import * as SecureStore from "expo-secure-store";
 import Icon from "react-native-vector-icons/Ionicons";
+
+const LogoComponent = () => {
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const { dispatch } = useRecipes();
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  if (keyboardVisible) {
+    return;
+  }
+
+  return (
+    <Icon
+      name={"pizza"}
+      size={100}
+      color={COLORS.PRIMARY}
+      style={{ alignSelf: "center" }}
+    />
+  );
+};
 
 const SignInScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { user, setUser } = useUser();
+  const { dispatch } = useRecipes();
 
   useEffect(() => {
     if (user) {
       navigation.navigate("Home");
     }
   }, [user]);
-
-  // useEffect(() => {
-  //   const checkForSavedUser = async () => {
-  //     try {
-  //       const savedUserData = await SecureStore.getItemAsync("userDetails");
-  //       const userDetails = savedUserData ? JSON.parse(savedUserData) : null;
-  //       // const userDetails = username ? JSON.parse(await SecureStore.getItemAsync(username)) : null;
-
-  //       if (userDetails) {
-  //         setUser(userDetails);
-  //         navigation.navigate("Home");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error reading saved user data", error);
-  //     }
-  //   };
-
-  //   checkForSavedUser();
-  // }, []);
 
   const handleSignIn = async () => {
     try {
@@ -43,6 +74,7 @@ const SignInScreen = ({ navigation }) => {
 
       if (userDetails && password === userDetails.password) {
         setUser(userDetails);
+        await dispatch({ type: ACTIONS.SET, payload: userDetails.id });
         navigation.navigate("Home");
       } else {
         Alert.alert("Failed", "Invalid username or password");
@@ -56,23 +88,21 @@ const SignInScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Icon
-          name={"pizza"}
-          size={100}
-          color={"#246b7d"}
-          style={{ alignSelf: "center" }}
-        />
+        <LogoComponent />
+
         <View style={styles.titleContainer}>
           <Text style={styles.title}>COOK</Text>
           <Text style={styles.title}>BOOK</Text>
         </View>
       </View>
+
       <TextInput
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
         style={styles.input}
       />
+
       <TextInput
         placeholder="Password"
         value={password}
@@ -80,11 +110,13 @@ const SignInScreen = ({ navigation }) => {
         secureTextEntry
         style={styles.input}
       />
-      <ButtonComponent text="Sign In" onPress={handleSignIn} />
-      <ButtonComponent
-        text="Sign Up"
+
+      <TouchableOpacity
+        text="New User"
         onPress={() => navigation.navigate("SignUp")}
       />
+
+      <ButtonComponent text="Sign In" onPress={handleSignIn} />
     </View>
   );
 };
@@ -101,24 +133,17 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     alignSelf: "center",
     textAlign: "center",
-    // borderWidth: 1,
-    // borderColor: "gray",
   },
   titleContainer: {
     marginTop: 10,
     alignSelf: "center",
     textAlign: "center",
     color: "#246b7d",
-    // borderWidth: 1,
-    // borderColor: "gray",
   },
   title: {
     fontWeight: "800",
     fontSize: 40,
-    // alignSelf: "center",
     color: "#246b7d",
-    // borderWidth: 1,
-    // borderColor: "gray",
   },
   input: {
     marginBottom: 12,

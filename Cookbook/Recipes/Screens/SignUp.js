@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Text, Alert } from "react-native";
-import * as SecureStore from "expo-secure-store";
+import { View, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import ButtonComponent from "../Components/ButtonComponent";
+import { COLORS } from "../Tools/Defaults";
+import * as SecureStore from "expo-secure-store";
+
 
 const SignUpScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -54,7 +56,7 @@ const SignUpScreen = ({ navigation }) => {
         style={styles.input}
       />
 
-      <ButtonComponent text="Sign Up" onPress={handleSignUp} />
+      <ButtonComponent text="Register" onPress={handleSignUp} />
       <ButtonComponent text="Cancel" onPress={() => navigation.goBack()} />
     </View>
   );
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: COLORS.SECONDARY,
     padding: 10,
   },
 });

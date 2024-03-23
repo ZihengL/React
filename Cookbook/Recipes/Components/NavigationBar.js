@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { COLORS } from "../Tools/Defaults";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useUser } from "../Redux/UserContext";
-import ButtonComponent from "../Components/ButtonComponent";
+import { RecipesProvider } from "../Redux/RecipesContext";
 
 import SignInScreen from "../Screens/SignIn";
 import SignUpScreen from "../Screens/SignUp";
-
 import ListRecipesScreen from "../Screens/ListRecipes";
 import ViewRecipeScreen from "../Screens/ViewRecipe";
 import AddRecipeScreen from "../Screens/AddRecipe";
 import SettingsScreen from "../Screens/Settings";
 
+import { useUser } from "../Redux/UserContext";
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+function getHeaderOptions(title, buttonText) {
+  return {
+    title: title,
+    headerStyle: {
+      backgroundColor: COLORS.PRIMARY,
+    },
+    headerTintColor: "#fff",
+    headerTitleStyle: {
+      fontWeight: "bold",
+    },
+    headerRight: () => <TouchableOpacity text={buttonText} />,
+    headerShown: true,
+  };
+}
 
 function AuthStack() {
   return (
@@ -36,27 +52,17 @@ function AuthStack() {
 
 function HomeStack() {
   return (
-    <Stack.Navigator
-    // screenOptions={{
-    //   headerShown: false,
-    // }}
-    >
+    <Stack.Navigator>
       <Stack.Screen
         name="ListRecipes"
         component={ListRecipesScreen}
-        options={{ headerShown: false }}
+        options={getHeaderOptions("RECIPES", "New Recipe")}
       />
-      <Stack.Screen
-        name="ViewRecipe"
-        component={ViewRecipeScreen}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="ViewRecipe" component={ViewRecipeScreen} />
       <Stack.Screen
         name="AddRecipe"
         component={AddRecipeScreen}
-        options={{
-          headerRight: () => <TouchableOpacity text="Save" />,
-        }}
+        options={getHeaderOptions("NEW RECIPE", "Save")}
       />
     </Stack.Navigator>
   );
@@ -64,16 +70,6 @@ function HomeStack() {
 
 const BottomTabNavigator = () => {
   const { user } = useUser();
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // useEffect(() => {
-  //   const checkLoginStatus = async () => {
-  //     const token = await SecureStore.getItemAsync("userToken");
-  //     setIsLoggedIn(!!token);
-  //   };
-
-  //   checkLoginStatus();
-  // }, []);
 
   const getIconName = (routename, focused) => {
     let iconName;
@@ -100,8 +96,8 @@ const BottomTabNavigator = () => {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: "#246b7d",
-        tabBarInactiveTintColor: "#ccc8c8",
+        tabBarActiveTintColor: COLORS.PRIMARY,
+        tabBarInactiveTintColor: COLORS.SECONDARY,
         headerShown: false,
       })}
     >
@@ -110,7 +106,11 @@ const BottomTabNavigator = () => {
       ) : (
         <Tab.Screen name="Auth" component={AuthStack} />
       )}
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={getHeaderOptions("SETTINGS", "Logout")}
+      />
     </Tab.Navigator>
   );
 };

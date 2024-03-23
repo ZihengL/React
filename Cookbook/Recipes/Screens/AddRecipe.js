@@ -1,21 +1,27 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
-  TextInput,
-  StyleSheet,
-  Text,
-  Image,
+  SafeAreaView,
   ScrollView,
+  Text,
+  TextInput,
   TouchableOpacity,
+  Image,
+  Dimensions,
+  StyleSheet,
 } from "react-native";
-// import { RNCamera } from "react-native-camera";
-import { useUser } from "../Redux/UserContext";
+import IngredientsComponent from "../Components/IngredientsComponent";
+import ButtonComponent from "../Components/ButtonComponent";
+import * as ImageTool from "../Tools/ImageTool";
+import * as Notifications from "expo-notifications";
+
+import { useUser, saveRecipes } from "../Redux/UserContext";
 import { useRecipes } from "../Redux/RecipesContext";
 import { ACTIONS } from "../Redux/RecipesReducer";
-import ButtonComponent from "../Components/ButtonComponent";
+import { COLORS } from "../Tools/Defaults";
 
-import * as Notifications from "expo-notifications";
-import * as ImagePicker from "expo-image-picker";
+const screenWidth = Dimensions.get("window").width;
+const calculatedHeight = (screenWidth * 9) / 16;
 
 async function scheduleNotification(username, recipename) {
   await Notifications.scheduleNotificationAsync({
@@ -30,185 +36,166 @@ async function scheduleNotification(username, recipename) {
 
 const AddRecipeScreen = ({ navigation }) => {
   const { user } = useUser();
-  const { dispatch } = useRecipes();
+  const { recipes, dispatch } = useRecipes();
 
   const [name, setName] = useState("");
   const [picture, setPicture] = useState(null);
-  const [ingredients, setIngredients] = useState("");
+  const [ingredients, setIngredients] = useState([]);
   const [instructions, setInstructions] = useState("");
 
-  const takePhoto = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert(`You've refused to allow this app to access your camera!`);
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync();
-
-    if (!result.canceled) {
-      setPicture(result.assets[0].uri);
-    }
-  };
-
-  const pickPhoto = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
+  React.useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity text="Save" onPress={addRecipe}>
+          <Text
+            style={{
+              marginRight: 20,
+              fontSize: 15,
+              fontWeight: "bold",
+              color: "#FFF",
+            }}
+          >
+            Save
+          </Text>
+        </TouchableOpacity>
+      ),
     });
+  }, [user, name, picture, ingredients, instructions, navigation, dispatch]);
 
-    console.log(result);
-
-    if (!result.canceled) {
-      setPicture(result.assets[0].uri);
-    }
-  };
-
-  const addRecipe = () => {
+  const addRecipe = async () => {
     const recipe = {
       id: Date.now(),
+      userId: user.id,
       author: user.username,
-      name,
-      picture,
-      ingredients,
-      instructions,
+      name: name,
+      picture: picture,
+      ingredients: ingredients,
+      instructions: instructions,
     };
 
     scheduleNotification(user.username, name);
     dispatch({ type: ACTIONS.ADD, payload: recipe });
+    // saveRecipes(user.id, recipes);
     navigation.goBack();
   };
 
-  React.useEffect(() => {
-    // Use `setOptions` to update the button that we previously specified
-    // Now the button includes an `onPress` handler to update the count
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity style={styles.headerButton} onPress={addRecipe}>
-          <Text style={{ fontSize: 15, marginRight: 20, }}>Save</Text>
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
+  const handleImageTool = async (isTakePhoto) => {
+    let result = null;
+
+    if (isTakePhoto) {
+      result = await ImageTool.takePhoto();
+    } else {
+      result = await ImageTool.pickPhoto();
+    }
+
+    setPicture(result);
+  };
+
+  const handleAddIngredient = (newIngredients) => {
+    setIngredients(newIngredients);
+  };
 
   return (
-    <View style={styles.container}>
-      {/* <Text style={styles.title}>NEW RECIPE</Text> */}
-      {/* <ButtonComponent text={"Save"} onPress={addRecipe} /> */}
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={{ marginHorizontal: 20 }}>
+        <View style={{ flexDirection: "column", gap: 30 }}>
+          <View>
+            {picture && (
+              <Image
+                source={{ uri: picture }}
+                style={styles.picture}
+                resizeMode="cover"
+              />
+            )}
+            <View style={styles.buttonsContainer}>
+              <ButtonComponent
+                text={(picture ? "Update" : "Take") + " picture"}
+                onPress={() => handleImageTool(true)}
+              />
+              <ButtonComponent
+                text={"Browse photos"}
+                onPress={() => handleImageTool(false)}
+              />
+            </View>
+          </View>
 
-      {picture && (
-        <Image
-          source={{ uri: picture }}
-          style={styles.picture}
-          resizeMode="contain"
-        />
-      )}
-      <View style={{ flexDirection: "row", padding: 20 }}>
-        <ButtonComponent
-          text={picture ? "Update picture" : "Take a picture"}
-          onPress={takePhoto}
-          containerStyle={styles.pictureButtons}
-        />
-        <ButtonComponent
-          text={"Choose a picture"}
-          onPress={pickPhoto}
-          containerStyle={styles.pictureButtons}
-        />
-      </View>
+          <View>
+            <Text style={styles.inputTitle}>Recipe Name</Text>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+            />
+          </View>
 
-      <TextInput
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
+          <View>
+            <Text style={styles.inputTitle}>Ingredients</Text>
+            <IngredientsComponent onStateChange={handleAddIngredient} />
+          </View>
 
-      <TextInput
-        placeholder="Ingredients"
-        value={ingredients}
-        onChangeText={setIngredients}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Instructions"
-        value={instructions}
-        onChangeText={setInstructions}
-        style={styles.instructions}
-        multiline
-        numberOfLines={3}
-      />
-    </View>
+          <View>
+            <Text style={styles.inputTitle}>Instructions</Text>
+            <TextInput
+              value={instructions}
+              onChangeText={setInstructions}
+              style={styles.instructions}
+              multiline
+              numberOfLines={3}
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    padding: 30,
-    justifyContent: "start",
-    alignItems: "center",
-  },
-  // headerButton: {
-  //   height: 20,
-  //   width: 50,
-  //   padding: 30,
-  //   // justifyContent: "start",
-  //   // alignItems: "right",
-  // },
-  item: {
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
   },
-  title: {
-    width: "100%",
-    margin: 40,
-    color: "#246b7d",
-    fontWeight: "bold",
-    fontSize: 30,
-    textTransform: "uppercase",
-    justifyContent: "center",
-    textAlign: "center",
-    alignItems: "center",
+  buttonsContainer: {
+    flexDirection: "row",
+    alignSelf: "center",
   },
   picture: {
+    flex: 1,
     width: "100%",
-    height: 300,
-    margin: 16,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    height: calculatedHeight,
+    borderRadius: 5,
+    borderColor: COLORS.SECONDARY,
+  },
+  ingredientsButton: {
+    width: "100%",
+    padding: 10,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+    backgroundColor: COLORS.PRIMARY,
+  },
+  inputTitle: {
+    marginBottom: 10,
+    color: COLORS.PRIMARY,
   },
   input: {
     width: "100%",
-    marginBottom: 16,
-    color: "#246b7d",
-    borderWidth: 1,
-    borderColor: "#ddd",
     padding: 8,
-  },
-  pictureButtons: {
-    width: '50%',
-    backgroundColor: '#246b7d',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-    padding: 15,
-    margin: 10,
-    // marginTop: 20,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: COLORS.PRIMARY,
+    color: COLORS.PRIMARY,
   },
   instructions: {
     flex: 1,
     width: "100%",
-    borderColor: "#ddd",
-    borderWidth: 1,
-    color: "#246b7d",
-    padding: 8,
+    padding: 10,
     textAlignVertical: "top",
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: COLORS.PRIMARY,
+    color: COLORS.PRIMARY,
   },
 });
 
