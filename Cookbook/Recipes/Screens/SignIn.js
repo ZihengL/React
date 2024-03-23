@@ -46,12 +46,19 @@ const LogoComponent = () => {
   }
 
   return (
-    <Icon
-      name={"pizza"}
-      size={100}
-      color={COLORS.PRIMARY}
-      style={{ alignSelf: "center" }}
-    />
+    <View style={styles.logoContainer}>
+      <Icon
+        name={"pizza"}
+        size={100}
+        color={COLORS.PRIMARY}
+        style={{ alignSelf: "center" }}
+      />
+
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>COOK</Text>
+        <Text style={styles.title}>BOOK</Text>
+      </View>
+    </View>
   );
 };
 
@@ -87,14 +94,14 @@ const SignInScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <LogoComponent />
+      {/* <View style={styles.logoContainer}> */}
+      <LogoComponent />
 
-        <View style={styles.titleContainer}>
+      {/* <View style={styles.titleContainer}>
           <Text style={styles.title}>COOK</Text>
           <Text style={styles.title}>BOOK</Text>
         </View>
-      </View>
+      </View> */}
 
       <TextInput
         placeholder="Username"

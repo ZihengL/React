@@ -19,20 +19,10 @@ import { useUser, saveRecipes } from "../Redux/UserContext";
 import { useRecipes } from "../Redux/RecipesContext";
 import { ACTIONS } from "../Redux/RecipesReducer";
 import { COLORS } from "../Tools/Defaults";
+import { scheduleNotification } from "../Tools/NotificationDispatcher";
 
 const screenWidth = Dimensions.get("window").width;
 const calculatedHeight = (screenWidth * 9) / 16;
-
-async function scheduleNotification(username, recipename) {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: `New recipe added to ${username}`,
-      body: recipename,
-      data: {},
-    },
-    trigger: { seconds: 2 },
-  });
-}
 
 const AddRecipeScreen = ({ navigation }) => {
   const { user } = useUser();
@@ -73,8 +63,8 @@ const AddRecipeScreen = ({ navigation }) => {
       instructions: instructions,
     };
 
-    scheduleNotification(user.username, name);
     dispatch({ type: ACTIONS.ADD, payload: recipe });
+    await scheduleNotification(user.username, name);
     // saveRecipes(user.id, recipes);
     navigation.goBack();
   };
